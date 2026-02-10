@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #D4AF37;
+  --color-secondary: #F5F5DC;
+  --color-accent: #333333;
+  --color-background: #FFFFFF;
+  
+  --font-serif: "Playfair Display", serif;
+  
+  --animate-fade-in: fade-in 0.5s ease-out;
+  --animate-slide-up: slide-up 0.5s ease-out;
+
+  @keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes slide-up {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+}
+
+/* Base Styles */
+@layer base {
+  body {
+    @apply bg-background text-accent font-sans antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+/* Components */
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white px-6 py-2 rounded-full hover:opacity-90 transition-all duration-300 shadow-md cursor-pointer;
+  }
+
+  .card-hover {
+    @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl;
+  }
+}
