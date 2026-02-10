@@ -1,16 +1,60 @@
-# React + Vite
+# PrettyYou 💎
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**PrettyYou** is an immersive e-commerce web application redefining the jewelry shopping experience. It combines a curated collection of earrings with cutting-edge **AI Styling** and **Augmented Reality (AR) Virtual Try-On** technology.
 
-Currently, two official plugins are available:
+🔗 **Live Demo:** [https://prettyyou-958e9.web.app](https://prettyyou-958e9.web.app)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 🛍️ Core E-Commerce
+- **Curated Catalog:** Browse a stunning collection of gold, silver, and gemstone earrings.
+- **Product Details:** View detailed specifications like material, weight, and dimensions.
+- **Shopping Cart:** Seamlessly manage your selections with a persistent cart.
 
-## Expanding the ESLint configuration
+### 🤖 AI Stylist
+- **Personalized Recommendations:** Chat with our AI Stylist to get suggestions based on your occasion (e.g., "wedding", "office party") or outfit.
+- **Interactive Suggestions:** Receive product cards directly in the chat for instant viewing.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 👓 Virtual Try-On (AR)
+- **Real-Time AR:** See how earrings look on *you* using your webcam.
+- **Face Tracking:** Powered by **MediaPipe Face Mesh** for precise ear landmark detection.
+- **Privacy First:** All video processing happens locally in your browser.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React 19, Vite
+- **Styling:** Tailwind CSS v4, Framer Motion
+- **AR/AI:** Google MediaPipe (Face Mesh)
+- **Routing:** React Router v7
+- **Hosting:** Firebase Hosting
+
+---
+
+## 🚀 Getting Started
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/ishitasahu1112-gif/PrettyYou_Website.git
+    cd PrettyYou_Website
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Run the development server:**
+    ```bash
+    npm run dev
+    ```
+
+4.  Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+---
+
+## 📄 License
+This project is open-source and available under the [MIT License](LICENSE).
