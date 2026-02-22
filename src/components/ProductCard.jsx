@@ -33,15 +33,27 @@ const ProductCard = ({ product }) => {
                         )}
                     </div>
                 </Link>
+
+                {/* Out of Stock Overlay */}
+                {product.stock !== undefined && product.stock <= 0 && (
+                    <div className="absolute inset-0 bg-stone-100/60 backdrop-blur-[2px] flex items-center justify-center z-20 pointer-events-none">
+                        <span className="bg-white/90 text-stone-900 border border-stone-200 px-4 py-2 font-serif text-sm tracking-widest uppercase shadow-sm">
+                            Out of Stock
+                        </span>
+                    </div>
+                )}
+
                 {/* Quick Add Button Overhead */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-10">
-                    <button
-                        onClick={handleQuickAdd}
-                        className="w-full bg-white/90 backdrop-blur-sm text-stone-900 py-3 text-xs uppercase tracking-widest font-bold hover:bg-white transition-colors shadow-lg cursor-pointer"
-                    >
-                        Quick Add
-                    </button>
-                </div>
+                {product.stock === undefined || product.stock > 0 ? (
+                    <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-10">
+                        <button
+                            onClick={handleQuickAdd}
+                            className="w-full bg-white/90 backdrop-blur-sm text-stone-900 py-3 text-xs uppercase tracking-widest font-bold hover:bg-white transition-colors shadow-lg cursor-pointer"
+                        >
+                            Quick Add
+                        </button>
+                    </div>
+                ) : null}
             </div>
 
             <div className="flex flex-col gap-1">
@@ -53,7 +65,7 @@ const ProductCard = ({ product }) => {
                 </div>
                 <p className="text-stone-500 font-light text-xs tracking-wide uppercase">{product.category || "Jewelry"}</p>
             </div>
-        </motion.div>
+        </motion.div >
     );
 };
 

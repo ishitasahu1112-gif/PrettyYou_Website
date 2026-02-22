@@ -62,24 +62,32 @@ const CartDrawer = () => {
                                             </div>
                                             <p className="text-stone-500 text-xs uppercase tracking-wide mb-3">{item.category}</p>
 
-                                            <div className="flex justify-between items-center">
-                                                <div className="flex items-center border border-stone-200 rounded-sm">
+                                            <div className="flex flex-col mt-3">
+                                                <div className="flex justify-between items-center">
+                                                    <div className="flex items-center border border-stone-200 rounded-sm">
+                                                        <button
+                                                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                                            className="px-2 py-1 text-stone-500 hover:bg-stone-50 cursor-pointer"
+                                                        >-</button>
+                                                        <span className="px-2 text-xs font-medium text-stone-900">{item.quantity}</span>
+                                                        <button
+                                                            onClick={() => updateQuantity(item.id, item.quantity + 1, item.stock)}
+                                                            className="px-2 py-1 text-stone-500 hover:bg-stone-50 cursor-pointer"
+                                                        >+</button>
+                                                    </div>
                                                     <button
-                                                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                                        className="px-2 py-1 text-stone-500 hover:bg-stone-50 cursor-pointer"
-                                                    >-</button>
-                                                    <span className="px-2 text-xs font-medium text-stone-900">{item.quantity}</span>
-                                                    <button
-                                                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                                        className="px-2 py-1 text-stone-500 hover:bg-stone-50 cursor-pointer"
-                                                    >+</button>
+                                                        onClick={() => removeFromCart(item.id)}
+                                                        className="text-xs text-stone-400 hover:text-red-500 underline transition-colors cursor-pointer"
+                                                    >
+                                                        Remove
+                                                    </button>
                                                 </div>
-                                                <button
-                                                    onClick={() => removeFromCart(item.id)}
-                                                    className="text-xs text-stone-400 hover:text-red-500 underline transition-colors cursor-pointer"
-                                                >
-                                                    Remove
-                                                </button>
+                                                {/* In-Line Stock Warning */}
+                                                {item.stock !== undefined && item.quantity >= item.stock && (
+                                                    <p className="text-red-500 text-[10px] mt-1 italic pointer-events-none">
+                                                        Only {item.stock} available in stock.
+                                                    </p>
+                                                )}
                                             </div>
                                         </div>
                                     </div>

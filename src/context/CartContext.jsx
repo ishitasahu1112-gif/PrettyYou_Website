@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 const CartContext = createContext();
 
@@ -25,9 +26,21 @@ export const CartProvider = ({ children }) => {
         setCartItems(prevItems => {
             const existingItem = prevItems.find(item => item.id === product.id);
             if (existingItem) {
+                // Determine limits; if stock is undefined, assume unlimited legacy product, otherwise cap it.
+                const nextQuantity = existingItem.quantity + 1;
+                if (product.stock !== undefined && nextQuantity > product.stock) {
+                    toast.error(`Only ${product.stock} available in stock.`);
+                    return prevItems;
+                }
                 return prevItems.map(item =>
-                    item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+                    item.id === product.id ? { ...item, quantity: nextQuantity } : item
                 );
+            }
+
+            // Check initial limit
+            if (product.stock !== undefined && product.stock <= 0) {
+                toast.error(`Item is out of stock.`);
+                return prevItems;
             }
             return [...prevItems, { ...product, quantity: 1 }];
         });
@@ -38,11 +51,16 @@ export const CartProvider = ({ children }) => {
         setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
     };
 
-    const updateQuantity = (productId, quantity) => {
+    const updateQuantity = (productId, quantity, maxStock) => {
         if (quantity < 1) {
             removeFromCart(productId);
             return;
         }
+
+        if (maxStock !== undefined && quantity > maxStock) {
+            return;
+        }
+
         setCartItems(prevItems =>
             prevItems.map(item => item.id === productId ? { ...item, quantity } : item)
         );

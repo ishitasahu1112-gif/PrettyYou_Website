@@ -253,7 +253,7 @@ const ProductForm = ({ product, onClose, onSaved }) => {
                         <textarea required name="description" value={formData.description} onChange={handleChange} rows="3" className="w-full border border-[#E8E1D9] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4A3B32]"></textarea>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-medium text-[#4A3B32] mb-1">Material</label>
                             <input required type="text" name="material" value={formData.material} onChange={handleChange} className="w-full border border-[#E8E1D9] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4A3B32]" />
@@ -262,9 +262,16 @@ const ProductForm = ({ product, onClose, onSaved }) => {
                             <label className="block text-sm font-medium text-[#4A3B32] mb-1">Weight</label>
                             <input type="text" name="weight" value={formData.weight} onChange={handleChange} placeholder="e.g. 4g" className="w-full border border-[#E8E1D9] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4A3B32]" />
                         </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-medium text-[#4A3B32] mb-1">Dimensions</label>
                             <input type="text" name="dimensions" value={formData.dimensions} onChange={handleChange} placeholder="e.g. 2.5cm x 1cm" className="w-full border border-[#E8E1D9] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4A3B32]" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-[#4A3B32] mb-1">Stock Quantity</label>
+                            <input required type="number" name="stock" value={formData.stock !== undefined ? formData.stock : ''} onChange={handleChange} min="0" step="1" placeholder="e.g. 15" className="w-full border border-[#E8E1D9] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#4A3B32]" />
                         </div>
                     </div>
 

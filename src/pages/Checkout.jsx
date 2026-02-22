@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
 import { Link, useNavigate } from 'react-router-dom';
 import { db } from '../services/firebase';
-import { ref, push, set, serverTimestamp } from 'firebase/database';
+import { ref, push, set, update, serverTimestamp } from 'firebase/database';
 
 const Checkout = () => {
     const { cartItems, cartTotal, clearCart } = useCart();
@@ -145,6 +145,16 @@ const Checkout = () => {
 
             const newOrderRef = push(ref(db, 'orders'));
             await set(newOrderRef, orderData);
+
+            // Deduct stock for each item if stock tracking is enabled
+            for (const item of cartItems) {
+                if (item.stock !== undefined) {
+                    const newStock = Math.max(0, item.stock - item.quantity);
+                    await update(ref(db, `products/${item.id}`), {
+                        stock: newStock
+                    });
+                }
+            }
 
             setSuccess(true);
             clearCart();

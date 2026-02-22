@@ -88,6 +88,33 @@ const AdminDashboard = () => {
         submitting: false
     });
 
+    const [deleteModal, setDeleteModal] = useState({
+        isOpen: false,
+        productId: null,
+        submitting: false
+    });
+
+    const handleDeleteClick = (productId) => {
+        setDeleteModal({ isOpen: true, productId, submitting: false });
+    };
+
+    const confirmDelete = async () => {
+        const { productId } = deleteModal;
+        if (!productId) return;
+
+        setDeleteModal(prev => ({ ...prev, submitting: true }));
+        try {
+            await remove(ref(db, `products/${productId}`));
+            toast.success('Product deleted successfully');
+            fetchProducts();
+        } catch (error) {
+            console.error("Error deleting product:", error);
+            toast.error('Failed to delete product');
+        } finally {
+            setDeleteModal({ isOpen: false, productId: null, submitting: false });
+        }
+    };
+
     const handleUpdateOrderStatus = (order, newStatus) => {
         setApprovalModal({
             isOpen: true,
@@ -217,6 +244,7 @@ const AdminDashboard = () => {
                                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-[#8C7A6B] uppercase tracking-wider">Product</th>
                                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-[#8C7A6B] uppercase tracking-wider">Category</th>
                                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-[#8C7A6B] uppercase tracking-wider">Price</th>
+                                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-[#8C7A6B] uppercase tracking-wider">Stock</th>
                                                 <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-[#8C7A6B] uppercase tracking-wider">Actions</th>
                                             </tr>
                                         </thead>
@@ -245,9 +273,18 @@ const AdminDashboard = () => {
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4A3B32]">
                                                         ${product.price}
                                                     </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4A3B32]">
+                                                        {product.stock !== undefined ? (
+                                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${product.stock > 10 ? 'bg-green-100 text-green-800' : product.stock > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+                                                                {product.stock === 0 ? 'Out of Stock' : product.stock}
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-stone-400 italic text-xs">Unlim.</span>
+                                                        )}
+                                                    </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                         <button onClick={() => handleEdit(product)} className="text-indigo-600 hover:text-indigo-900 mr-4 cursor-pointer">Edit</button>
-                                                        <button onClick={() => handleDelete(product.id)} className="text-red-600 hover:text-red-900 cursor-pointer">Delete</button>
+                                                        <button onClick={() => handleDeleteClick(product.id)} className="text-red-600 hover:text-red-900 cursor-pointer">Delete</button>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -424,6 +461,35 @@ const AdminDashboard = () => {
                                     }`}
                             >
                                 {approvalModal.submitting ? 'Processing...' : `Confirm ${approvalModal.newStatus}`}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Custom Delete Confirmation Modal */}
+            {deleteModal.isOpen && (
+                <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 backdrop-blur-sm">
+                    <div className="bg-white rounded-lg shadow-xl w-full max-w-sm overflow-hidden text-center p-6">
+                        <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4 text-red-600">
+                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </div>
+                        <h3 className="font-serif text-2xl text-stone-900 mb-2">Delete Product?</h3>
+                        <p className="text-stone-600 mb-8 text-sm">Are you sure you want to permanently remove this product? This action cannot be undone.</p>
+
+                        <div className="flex justify-center gap-3">
+                            <button
+                                onClick={() => setDeleteModal({ isOpen: false, productId: null, submitting: false })}
+                                className="px-6 py-2.5 text-sm font-bold text-stone-600 bg-stone-100 hover:bg-stone-200 rounded-md transition-colors cursor-pointer w-full"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                disabled={deleteModal.submitting}
+                                className={`px-6 py-2.5 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors cursor-pointer w-full ${deleteModal.submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
+                                {deleteModal.submitting ? 'Deleting...' : 'Delete'}
                             </button>
                         </div>
                     </div>

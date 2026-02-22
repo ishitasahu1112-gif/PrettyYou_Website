@@ -101,7 +101,15 @@ const ProductDetails = () => {
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4">
-                        <Button onClick={() => addToCart(product)} className="flex-1 py-4 text-sm font-bold shadow-xl">Add to Cart</Button>
+                        {product.stock !== undefined && product.stock <= 0 ? (
+                            <Button disabled className="flex-1 py-4 text-sm font-bold shadow-xl bg-stone-300 text-stone-500 cursor-not-allowed">
+                                Out of Stock
+                            </Button>
+                        ) : (
+                            <Button onClick={() => addToCart(product)} className="flex-1 py-4 text-sm font-bold shadow-xl">
+                                Add to Cart
+                            </Button>
+                        )}
                         <Button variant="outline" className="px-6 py-4 sm:flex-none justify-center" onClick={() => setIsTryOnOpen(true)}>
                             Try-On
                         </Button>
