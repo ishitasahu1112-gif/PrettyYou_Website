@@ -12,5 +12,13 @@
         "destination": "/index.html"
       }
     ]
+  },
+  "auth": {
+    "providers": {
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "PrettyYou",
+        "supportEmail": "fabishi1@gmail.com"
+      }
+    }
   }
 }

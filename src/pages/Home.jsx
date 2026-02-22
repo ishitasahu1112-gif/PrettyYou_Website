@@ -1,16 +1,39 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { ref, get, query, limitToFirst } from 'firebase/database';
+import { db } from '../services/firebase';
 import heroImage from '../assets/hero.png';
 import ProductCard from '../components/ProductCard';
 import Button from '../components/Button';
 
-const dummyProducts = [
-    { id: 1, name: "Celestial Drop", price: 120, category: "Gold Plated", image: null },
-    { id: 2, name: "Moonlight Hoop", price: 85, category: "Silver", image: null },
-    { id: 3, name: "Starlight Stud", price: 45, category: "Gemstone", image: null },
-    { id: 4, name: "Eclipse Dangle", price: 150, category: "Gold Plated", image: null },
-];
-
 const Home = () => {
+    const [featuredProducts, setFeaturedProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchFeatured = async () => {
+            try {
+                const snapshot = await get(query(ref(db, 'products'), limitToFirst(4)));
+                if (snapshot.exists()) {
+                    const productsData = [];
+                    snapshot.forEach((childSnapshot) => {
+                        productsData.push({ id: childSnapshot.key, ...childSnapshot.val() });
+                    });
+                    setFeaturedProducts(productsData);
+                } else {
+                    setFeaturedProducts([]);
+                }
+            } catch (error) {
+                console.error("Error fetching featured products:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchFeatured();
+    }, []);
+
     return (
         <div className="w-full">
             {/* Hero Section */}
@@ -47,7 +70,7 @@ const Home = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.6 }}
                     >
-                        <Button variant="secondary" className="px-12 py-5 text-sm font-bold shadow-2xl">
+                        <Button onClick={() => navigate('/shop')} variant="secondary" className="px-12 py-5 text-sm font-bold shadow-2xl">
                             Explore Collection
                         </Button>
                     </motion.div>
@@ -62,13 +85,19 @@ const Home = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-                    {dummyProducts.map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                    ))}
+                    {loading ? (
+                        <div className="col-span-full text-center py-10 text-stone-400">Loading Featured Products...</div>
+                    ) : featuredProducts.length > 0 ? (
+                        featuredProducts.map((product) => (
+                            <ProductCard key={product.id} product={product} />
+                        ))
+                    ) : (
+                        <div className="col-span-full text-center py-10 text-stone-400">No products available.</div>
+                    )}
                 </div>
 
                 <div className="mt-20 text-center">
-                    <Button variant="outline" className="px-10 py-4">View All Products</Button>
+                    <Button onClick={() => navigate('/shop')} variant="outline" className="px-10 py-4">View All Products</Button>
                 </div>
             </section>
         </div>

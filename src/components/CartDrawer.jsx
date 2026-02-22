@@ -1,10 +1,13 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import Button from './Button';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const CartDrawer = () => {
     const { cartItems, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, cartTotal } = useCart();
+    const { currentUser } = useAuth();
 
     return (
         <AnimatePresence>
@@ -91,9 +94,22 @@ const CartDrawer = () => {
                                     <span className="text-stone-900 font-bold text-lg">${cartTotal}</span>
                                 </div>
                                 <p className="text-stone-400 text-xs mb-6 text-center">Shipping & taxes calculated at checkout.</p>
-                                <Link to="/checkout" onClick={() => setIsCartOpen(false)}>
-                                    <Button className="w-full py-4 text-sm shadow-xl">Proceed to Checkout</Button>
-                                </Link>
+                                {currentUser ? (
+                                    <Link to="/checkout" onClick={() => setIsCartOpen(false)}>
+                                        <Button className="w-full py-4 text-sm shadow-xl">Proceed to Checkout</Button>
+                                    </Link>
+                                ) : (
+                                    <Link
+                                        to="/login"
+                                        state={{ from: { pathname: '/checkout' } }}
+                                        onClick={() => {
+                                            setIsCartOpen(false);
+                                            toast('Please login to continue to checkout', { icon: '👋' });
+                                        }}
+                                    >
+                                        <Button className="w-full py-4 text-sm shadow-xl bg-stone-800 hover:bg-stone-900">Login to Checkout</Button>
+                                    </Link>
+                                )}
                             </div>
                         )}
                     </motion.div>

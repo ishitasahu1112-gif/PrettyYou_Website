@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { ref, get, child } from 'firebase/database';
+import { db } from '../services/firebase';
 import Button from '../components/Button';
 import ProductCard from '../components/ProductCard';
-import { products } from '../data/products';
 import VirtualTryOn from '../components/VirtualTryOn';
 import { useCart } from '../context/CartContext';
 
@@ -12,9 +13,34 @@ const ProductDetails = () => {
     const navigate = useNavigate();
     const { addToCart } = useCart();
     const [isTryOnOpen, setIsTryOnOpen] = useState(false);
-    const product = products.find(p => p.id === parseInt(id));
 
-    if (!product) return <div className="text-center py-20">Product not found.</div>;
+    // Firestore state
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const dbRef = ref(db);
+                const snapshot = await get(child(dbRef, `products/${id}`));
+
+                if (snapshot.exists()) {
+                    setProduct({ id: snapshot.key, ...snapshot.val() });
+                } else {
+                    console.log("No such product!");
+                }
+            } catch (error) {
+                console.error("Error fetching product:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProduct();
+    }, [id]);
+
+    if (loading) return <div className="text-center py-32 text-stone-400">Loading Product Details...</div>;
+    if (!product) return <div className="text-center py-32 text-stone-400">Product not found.</div>;
 
     return (
         <div className="bg-white min-h-screen pt-32 pb-20 px-6 md:px-12">
@@ -74,9 +100,9 @@ const ProductDetails = () => {
                         <div><strong className="text-stone-900 uppercase">Care:</strong><br />Avoid water & perfume</div>
                     </div>
 
-                    <div className="flex gap-4">
+                    <div className="flex flex-col sm:flex-row gap-4">
                         <Button onClick={() => addToCart(product)} className="flex-1 py-4 text-sm font-bold shadow-xl">Add to Cart</Button>
-                        <Button variant="outline" className="px-6 py-4" onClick={() => setIsTryOnOpen(true)}>
+                        <Button variant="outline" className="px-6 py-4 sm:flex-none justify-center" onClick={() => setIsTryOnOpen(true)}>
                             Try-On
                         </Button>
                     </div>

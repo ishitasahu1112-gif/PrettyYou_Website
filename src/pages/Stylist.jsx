@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ref, get } from 'firebase/database';
+import { db } from '../services/firebase';
 import Button from '../components/Button';
 import ProductCard from '../components/ProductCard';
-import { products } from '../data/products';
 import aboutBackground from '../assets/about_background.png';
 
 const Stylist = () => {
@@ -11,7 +12,28 @@ const Stylist = () => {
     ]);
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
+    const [products, setProducts] = useState([]);
     const messagesEndRef = useRef(null);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const snapshot = await get(ref(db, 'products'));
+                if (snapshot.exists()) {
+                    const productsData = [];
+                    snapshot.forEach((childSnapshot) => {
+                        productsData.push({ id: childSnapshot.key, ...childSnapshot.val() });
+                    });
+                    setProducts(productsData);
+                } else {
+                    setProducts([]);
+                }
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        };
+        fetchProducts();
+    }, []);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
